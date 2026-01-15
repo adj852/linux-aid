@@ -59,6 +59,17 @@ No advanced Linux knowledge is required.
 ## 🚀 Getting Started (Step by Step)
 
 ### 1️⃣ Clone the repository
-
 ```bash
 git clone https://github.com/adj852/linux-aid.git
+
+### 2️⃣ Enter the tool directory
+cd linux-aid/linux-aid && ls
+
+###3️⃣ Make the tool executable
+chmod +x linux-aid && ls
+
+###4️⃣ Run linux-aid (for more begginer friendly stuff add --explain)
+./linux-aid (./linux-aid --explain)
+
+
+
