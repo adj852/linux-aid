@@ -55,11 +55,11 @@ No advanced Linux knowledge is required.
   - Security & permissions
 
 ---
-
+```bash
 ## 🚀 Getting Started (Step by Step)
 
 ### 1️⃣ Clone the repository
-```bash
+
 git clone https://github.com/adj852/linux-aid.git
 
 ### 2️⃣ Enter the tool directory
