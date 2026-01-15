@@ -1,0 +1,158 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# -------------------------------------------------
+# linux-aid — Universal Linux diagnostics helper
+# -------------------------------------------------
+
+BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# --- Load core files safely ---
+load_core() {
+  local file="$1"
+  if [[ -f "$BASE_DIR/core/$file" ]]; then
+    source "$BASE_DIR/core/$file"
+  else
+    echo "[ERROR] Missing core file: core/$file"
+    exit 1
+  fi
+}
+
+load_core output.sh
+load_core detect.sh
+load_core utils.sh
+
+# --- Load modules safely ---
+load_module() {
+  local module="$1"
+  local path="$BASE_DIR/modules/$module.sh"
+
+  if [[ -f "$path" ]]; then
+    source "$path"
+    return 0
+  else
+    warning "Skipping missing module: $module"
+    return 0
+  fi
+}
+
+#-------load core---------
+run_module() {
+  set +e
+  "$@"
+  set -e
+}
+
+# --- Explain flag ---
+EXPLAIN=false
+[[ "${1:-}" == "--explain" ]] && EXPLAIN=true
+export BASE_DIR EXPLAIN
+
+# -------------------------------------------------
+# Main menu loop
+# -------------------------------------------------
+while true; do
+  clear
+  section "linux-aid"
+  info "This tool is SAFE: it only reads information and never changes your system."
+  echo
+  echo "What do you need help with?"
+  echo
+  echo "  1) General system problems"
+  echo "  2) Network / Internet issues"
+  echo "  3) Boot problems"
+  echo "  4) Updates / package issues"
+  echo "  5) Security & access"
+  echo "  6) Performance / slow system"
+  echo "  7) Hardware / drivers"
+  echo "  8) System services"
+  echo "  9) Logs / crashes"
+  echo " 10) Filesystem / disk"
+  echo " 11) Security"
+  echo " 12) Run ALL checks (advanced)"
+  echo
+  echo "Type a number or 'exit' | 'q' to quit:"
+  read -r choice
+  echo
+
+  case "$choice" in
+    1)
+      load_module overview
+      overview
+      ;;
+    2)
+      load_module network
+      network
+      ;;
+    3)
+      load_module boot
+      boot
+      ;;
+    4)
+      load_module packages
+      packages
+      ;;
+    5)
+      load_module security
+      security
+      ;;
+    6)
+      load_module performance
+      performance
+      ;;
+    7)
+      load_module hardware
+      hardware
+      ;;
+    8)
+      load_module services
+      services
+      ;;
+    9)
+      load_module logs
+      logs
+      ;;
+    10)
+      load_module filesystem
+      filesystem
+      ;;
+    11)
+      load_module security
+      security
+      ;;
+    12)
+      load_module overview
+      load_module network
+      load_module boot
+      load_module packages
+      load_module performance
+      load_module hardware
+      load_module services
+      load_module logs
+      load_module filesystem
+      load_module security
+      run_module overview
+      run_module network
+      run_module boot
+      run_module packages
+      run_module performance
+      run_module hardware
+      run_module services
+      run_module logs
+      run_module filesystem
+      run_module security
+      ;;
+    exit|quit|q)
+      success "Goodbye 👋"
+      exit 0
+      ;;
+    *)
+      warning "Invalid choice. Please try again."
+      sleep 1
+      ;;
+  esac
+
+  echo
+  info "Press ENTER to return to menu..."
+  read -r
+done
